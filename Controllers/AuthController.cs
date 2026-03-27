@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MovieRecommendationApp.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using MovieRecommendationApp.Models;
 using MovieRecommendationApp.Repositories;
+using MovieRecommendationApp.Services;
 
 namespace MovieRecommendationApp.Controllers
 {

@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MovieRecommendationApp.Data;
 using MovieRecommendationApp.Models;
-using System;
 
 namespace MovieRecommendationApp.Repositories
 {
