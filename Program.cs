@@ -14,14 +14,8 @@ internal class Program
         builder.Services.AddControllers();
 
         // Настройка базы данных SQLite
-        //builder.Services.AddDbContext<AppDbContext>(options =>
-        //  options.UseSqlite("Data Source=movieapp.db"));
-
-        // Стало для PostgreSQL
-        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
-                               ?? "Host=localhost;Database=movieapp;Username=postgres;Password=postgres";
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(connectionString));
+          options.UseSqlite("Data Source=movieapp.db"));
 
 
         // Регистрируем репозитории
