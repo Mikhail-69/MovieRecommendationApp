@@ -35,6 +35,10 @@ internal class Program
 
         var app = builder.Build();
 
+	//
+        app.UseStaticFiles();
+	//
+
         // Создаем базу данных, если её нет
         using (var scope = app.Services.CreateScope())
         {
@@ -50,7 +54,7 @@ internal class Program
         }
 
         //app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        //app.UseStaticFiles();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
