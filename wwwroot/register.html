@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Регистрация</h1>
+    <div class="form-group">
+        <label>Логин:</label>
+        <input type="text" id="login" placeholder="Введите логин">
+    </div>
+    <div class="form-group">
+        <label>Пароль:</label>
+        <input type="password" id="password" placeholder="Введите пароль (мин. 6 символов)">
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <input type="email" id="email" placeholder="example@mail.com">
+    </div>
+    <button id="registerBtn">Зарегистрироваться</button>
+    <div id="message" class="error"></div>
+    <div class="form-group" style="margin-top: 20px;">
+        <button onclick="location.href='index.html'">На главную</button>
+    </div>
+
+    <script>
+        document.getElementById('registerBtn').addEventListener('click', async () => {
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+            const messageDiv = document.getElementById('message');
+
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login, password, email })
+            });
+
+            if (response.ok) {
+                messageDiv.className = 'success';
+                messageDiv.innerText = 'Регистрация успешна! Теперь войдите.';
+                setTimeout(() => { location.href = 'login.html'; }, 2000);
+            } else {
+                const error = await response.text();
+                messageDiv.innerText = error || 'Ошибка регистрации';
+            }
+        });
+    </script>
+</body>
+</html>

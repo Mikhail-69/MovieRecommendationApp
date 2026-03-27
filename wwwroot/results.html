@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рекомендации</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .movie-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            }
+
+        .movie-poster {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .movie-poster-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .movie-genre {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .movie-rating {
+            font-size: 16px;
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+            .movie-rating span {
+                color: #999;
+                font-weight: normal;
+            }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            position: relative;
+        }
+
+        .modal-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 32px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+            .modal-close:hover {
+                background: rgba(0,0,0,0.8);
+            }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-detail {
+            font-size: 14px;
+            color: #666;
+        }
+
+            .modal-detail strong {
+                color: #333;
+            }
+
+        .modal-description {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .rating-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+            .rating-section label {
+                font-weight: bold;
+                color: #333;
+            }
+
+        .rating-input {
+            width: 80px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        .rate-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: auto;
+        }
+
+            .rate-btn:hover {
+                background: #0056b3;
+            }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #999;
+        }
+
+        .load-more-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .load-more-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: auto;
+        }
+
+            .load-more-btn:hover {
+                background: #0056b3;
+            }
+
+            .load-more-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+
+        .back-buttons {
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+            .back-buttons button {
+                width: auto;
+                padding: 10px 25px;
+            }
+
+        .pagination-info {
+            text-align: center;
+            padding: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Рекомендованные фильмы</h1>
+    <div id="loading" class="loading">Загрузка...</div>
+    <div id="moviesGrid" class="movies-grid"></div>
+    <div id="noResults" class="no-results" style="display: none;">Фильмы не найдены. Попробуйте изменить критерии.</div>
+
+    <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+        <button id="loadMoreBtn" class="load-more-btn">Показать ещё</button>
+    </div>
+    <div class="pagination-info" id="paginationInfo"></div>
+
+    <div class="back-buttons">
+        <button onclick="location.href='quest.html'">Новый поиск</button>
+        <button onclick="location.href='index.html'">На главную</button>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img id="modalPoster" class="modal-poster" src="" alt="Постер">
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-details">
+                    <div class="modal-detail"><strong>Год:</strong> <span id="modalYear"></span></div>
+                    <div class="modal-detail"><strong>Рейтинг:</strong> <span id="modalRating"></span></div>
+                    <div class="modal-detail"><strong>Длительность:</strong> <span id="modalDuration"></span> мин.</div>
+                    <div class="modal-detail"><strong>Жанры:</strong> <span id="modalGenre"></span></div>
+                    <div class="modal-detail"><strong>Актёры:</strong> <span id="modalActors"></span></div>
+                </div>
+                <div class="modal-description" id="modalDescription"></div>
+                <div class="rating-section">
+                    <label>Ваша оценка (1-10):</label>
+                    <input type="number" id="modalRatingInput" min="1" max="10" step="1" class="rating-input">
+                    <button id="modalRateBtn" class="rate-btn">Оценить</button>
+                    <span id="modalRatingStatus" style="color: green; display: none;">✓ Оценка сохранена</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFilmId = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalCount = 0;
+        let currentAnswers = null;
+        let isLoading = false;
+        let allFilms = [];
+
+        async function loadRecommendations(page = 1) {
+            if (isLoading) return;
+            isLoading = true;
+
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Вы не авторизованы.');
+                location.href = 'login.html';
+                return;
+            }
+
+            const answersStr = localStorage.getItem('questAnswers');
+            if (!answersStr) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('noResults').style.display = 'block';
+                isLoading = false;
+                return;
+            }
+
+            currentAnswers = JSON.parse(answersStr);
+
+            try {
+                const response = await fetch(`/api/rec/by-quest?page=${page}&pageSize=20`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentAnswers)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки');
+                }
+
+                const data = await response.json();
+                const films = data.items;
+                totalCount = data.totalCount;
+                totalPages = data.totalPages;
+                currentPage = data.currentPage;
+
+                const loading = document.getElementById('loading');
+                const moviesGrid = document.getElementById('moviesGrid');
+                const noResults = document.getElementById('noResults');
+                const loadMoreContainer = document.getElementById('loadMoreContainer');
+                const paginationInfo = document.getElementById('paginationInfo');
+
+                loading.style.display = 'none';
+
+                if (films.length === 0 && page === 1) {
+                    noResults.style.display = 'block';
+                    loadMoreContainer.style.display = 'none';
+                    paginationInfo.textContent = '';
+                    isLoading = false;
+                    return;
+                }
+
+                noResults.style.display = 'none';
+
+                // Если это первая страница — очищаем сетку
+                if (page === 1) {
+                    moviesGrid.innerHTML = '';
+                    allFilms = [];
+                }
+
+                // Добавляем новые фильмы в массив
+                allFilms = [...allFilms, ...films];
+
+                // Отображаем все фильмы
+                displayFilms(allFilms);
+
+                // Показываем информацию о пагинации
+                if (totalCount > 0) {
+                    paginationInfo.textContent = `Показано ${allFilms.length} из ${totalCount} фильмов`;
+                }
+
+                // Показываем кнопку "Показать ещё", если есть ещё страницы
+                if (currentPage < totalPages) {
+                    loadMoreContainer.style.display = 'block';
+                } else {
+                    loadMoreContainer.style.display = 'none';
+                    if (totalCount > 0 && allFilms.length === totalCount) {
+                        paginationInfo.textContent = `Все ${totalCount} фильмов загружены`;
+                    }
+                }
+
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Ошибка загрузки фильмов. Проверьте, что сервер запущен.';
+                console.error(error);
+            }
+
+            isLoading = false;
+        }
+
+        function displayFilms(films) {
+            const moviesGrid = document.getElementById('moviesGrid');
+            moviesGrid.innerHTML = '';
+
+            for (const film of films) {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.onclick = () => openModal(film);
+
+                let posterHtml = '';
+                if (film.poster && film.poster !== '') {
+                    posterHtml = `<img class="movie-poster" src="${film.poster}" alt="${film.title}" onerror="this.src=''">`;
+                } else {
+                    posterHtml = `<div class="movie-poster-placeholder">🎬</div>`;
+                }
+
+                card.innerHTML = `
+                        ${posterHtml}
+                        <div class="movie-info">
+                            <div class="movie-title">${film.title}</div>
+                            <div class="movie-genre">${film.genre || 'жанр не указан'}</div>
+                            <div class="movie-rating">⭐ ${film.rating || 'н/д'} <span>/10</span></div>
+                        </div>
+                    `;
+                moviesGrid.appendChild(card);
+            }
+        }
+
+        function loadMore() {
+            if (currentPage < totalPages) {
+                loadRecommendations(currentPage + 1);
+            }
+        }
+
+        function openModal(film) {
+            currentFilmId = film.id;
+
+            document.getElementById('modalTitle').textContent = film.title;
+            document.getElementById('modalYear').textContent = film.year || 'н/д';
+            document.getElementById('modalRating').textContent = film.rating || 'н/д';
+            document.getElementById('modalDuration').textContent = film.duration || 'н/д';
+            document.getElementById('modalGenre').textContent = film.genre || 'н/д';
+            document.getElementById('modalActors').textContent = film.actors || 'н/д';
+            document.getElementById('modalDescription').textContent = film.description || 'нет описания';
+
+            const posterImg = document.getElementById('modalPoster');
+            if (film.poster && film.poster !== '') {
+                posterImg.src = film.poster;
+                posterImg.style.display = 'block';
+            } else {
+                posterImg.style.display = 'none';
+            }
+
+            document.getElementById('modalRatingInput').value = '';
+            document.getElementById('modalRatingStatus').style.display = 'none';
+
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            currentFilmId = null;
+        }
+
+        document.getElementById('modalRateBtn').addEventListener('click', async () => {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Вы не авторизованы.');
+                return;
+            }
+
+            const score = parseInt(document.getElementById('modalRatingInput').value);
+            if (isNaN(score) || score < 1 || score > 10) {
+                alert('Оценка должна быть от 1 до 10');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/rec/rate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: parseInt(userId),
+                        filmId: currentFilmId,
+                        score: score
+                    })
+                });
+
+                if (response.ok) {
+                    const statusSpan = document.getElementById('modalRatingStatus');
+                    statusSpan.style.display = 'inline';
+                    setTimeout(() => {
+                        statusSpan.style.display = 'none';
+                    }, 2000);
+                } else {
+                    alert('Ошибка при сохранении оценки');
+                }
+            } catch (error) {
+                alert('Ошибка при сохранении оценки');
+            }
+        });
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+        document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
+
+        loadRecommendations(1);
+    </script>
+</body>
+</html>

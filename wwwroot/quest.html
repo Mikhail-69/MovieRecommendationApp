@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анкета</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Выберите критерии для подбора фильмов</h1>
+    <div class="form-group">
+        <label>Жанры (через запятую):</label>
+        <input type="text" id="genres" placeholder="например: боевик, фантастика">
+    </div>
+    <div class="form-group">
+        <label>Минимальный год выпуска:</label>
+        <input type="number" id="minYear" value="1990">
+    </div>
+    <div class="form-group">
+        <label>Максимальный год выпуска:</label>
+        <input type="number" id="maxYear" value="2025">
+    </div>
+    <div class="form-group">
+        <label>Минимальный рейтинг (от 0 до 10):</label>
+        <input type="number" id="minRating" step="0.1" min="0" max="10" value="5">
+    </div>
+    <div class="form-group">
+        <label>Максимальная длительность (минут):</label>
+        <input type="number" id="maxDuration" value="180">
+    </div>
+    <div class="form-group">
+        <label>Предпочитаемые актёры (через запятую, опционально):</label>
+        <input type="text" id="actors" placeholder="например: Бред Питт">
+    </div>
+    <button id="searchBtn">Найти фильмы</button>
+    <div id="message"></div>
+    <div class="form-group" style="margin-top: 20px;">
+        <button onclick="location.href='index.html'">На главную</button>
+    </div>
+
+    <script>
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Вы не авторизованы. Пожалуйста, войдите.');
+                location.href = 'login.html';
+                return;
+            }
+
+            const genres = document.getElementById('genres').value.split(',').map(g => g.trim()).filter(g => g);
+            const minYear = parseInt(document.getElementById('minYear').value);
+            const maxYear = parseInt(document.getElementById('maxYear').value);
+            const minRating = parseFloat(document.getElementById('minRating').value);
+            const maxDuration = parseInt(document.getElementById('maxDuration').value);
+            const actors = document.getElementById('actors').value.split(',').map(a => a.trim()).filter(a => a);
+
+            const answers = {
+                genres: genres,
+                minYear: minYear,
+                maxYear: maxYear,
+                minRating: minRating,
+                maxDuration: maxDuration,
+                actors: actors
+            };
+
+            localStorage.setItem('questAnswers', JSON.stringify(answers));
+            location.href = 'results.html';
+        });
+    </script>
+</body>
+</html>
