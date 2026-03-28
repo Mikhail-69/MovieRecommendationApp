@@ -41,6 +41,13 @@ builder.Services.AddSingleton<TMDBService>();
 
 var app = builder.Build();
 
+// Автоматическое создание базы данных и таблиц
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureCreated(); // Создаёт базу и таблицы, если их нет
+}
+
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
