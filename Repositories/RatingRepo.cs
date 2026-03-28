@@ -32,7 +32,7 @@ namespace MovieRecommendationApp.Repositories
                 _context.Ratings.Add(new Rating
                 {
                     UserId = userId,
-                    FilmId = filmId,
+                    FilmId = filmId, 
                     Score = score
                 });
             }
