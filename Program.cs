@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Получаем строку подключения из переменной окружения
-var connectionString = Environment.GetEnvironmentVariable("postgresql://movieapp_db_9bbo_user:SizUZGwgnkvFKnpgAIbLpw6Sa5OwfhTI@dpg-d73e6nma2pns73fivp9g-a.frankfurt-postgres.render.com/movieapp_db_9bbo");
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 if (string.IsNullOrEmpty(connectionString))
 {
