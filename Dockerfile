@@ -16,8 +16,8 @@ WORKDIR /app
 # Копируем опубликованное приложение
 COPY --from=build /app/publish .
 
-# Проверяем, что wwwroot скопирован
-RUN ls -la && ls -la wwwroot || echo "wwwroot not found"
+# Выводим список файлов в лог (отладка)
+RUN echo "=== Содержимое /app ===" && ls -la && echo "=== Содержимое wwwroot ===" && (ls -la wwwroot || echo "wwwroot не найден!")
 
 EXPOSE 8080
 EXPOSE 443
