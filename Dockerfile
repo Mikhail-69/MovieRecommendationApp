@@ -13,11 +13,14 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
-# Копируем опубликованное приложение
+# Копируем всё, что получилось
 COPY --from=build /app/publish .
 
-# Выводим список файлов в лог (отладка)
-RUN echo "=== Содержимое /app ===" && ls -la && echo "=== Содержимое wwwroot ===" && (ls -la wwwroot || echo "wwwroot не найден!")
+# ЯВНО копируем wwwroot ещё раз
+COPY --from=build /src/wwwroot ./wwwroot
+
+# Проверка в логах
+RUN echo "=== Проверка wwwroot ===" && ls -la ./wwwroot
 
 EXPOSE 8080
 EXPOSE 443
